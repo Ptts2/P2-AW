@@ -1,0 +1,62 @@
+body{
+    background-color: rgb(220, 229, 234);
+    font-family: sans-serif;
+}
+
+.blueHeader{
+    font-size: 190%;
+    color: rgb(46, 110, 138);
+    margin-left: min(3%, 25px);
+}
+
+.divTabla{
+    display: flex;
+}
+
+.tablaPasatiempo{
+    font-size: 100%;
+    border-collapse: collapse;
+    width: 300px; 
+    max-width: 300px;
+}
+
+.tablaPasatiempo td{
+    border: 4px solid black;
+    text-align: center;
+    width: 35px;
+    padding: 12px; 
+    resize: none;
+}
+.inputPistas{
+    padding-left: 5%;
+    padding-top: 5%;
+}
+
+/*Numeros de la tabla*/
+.noborder{
+    border: 0px !important;
+    color: rgb(220, 229, 234);
+    user-select: none;
+}
+.filanum::after{
+    font-size: 110%;
+    vertical-align: -50%;
+    margin: 30%;
+}
+.filanum::before{
+    font-size: 110%;
+    vertical-align: -50%;
+    margin: 35%;
+}
+#fila1ST::after{
+    content: "1";
+}
+#fila2ST::after{
+    content: "2";
+}
+#fila3ST::before{
+    content: "3";
+}
+#fila4ST::before{
+    content: "4";
+}
