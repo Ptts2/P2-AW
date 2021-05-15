@@ -5,12 +5,15 @@ const express = require('express');
 const app = express();
 
 const pasatiempos = require('./appRoutes.js');
-const PORT = 5050;
+const checker = require('./appDataChecker.js');
+const PORT = 5500;
+
 
 //Pagina principal - seleccion de pasatiempos
 app.use(express.static('public'));
 
 //Paginas de los pasatiempos
+app.use('/check', checker);
 app.use('/pasatiempos', pasatiempos)
 
 
