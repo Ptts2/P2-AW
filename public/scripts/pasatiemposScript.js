@@ -1,6 +1,7 @@
 
 var HINT_QTY = 3;
 var dictionary;
+var resuelto = false;
 const respuestas = ["CLAN", "PENA", "REMATO", "TORERO"];
 
 async function inicio() {
@@ -203,15 +204,9 @@ async function getDictionaryData(url){
 }
 
 
-async function pruebaRequest(){
+async function serverRequest(data){
 
     var peticion = new XMLHttpRequest();
-
-    var data = {
-        'username': 'userLol',
-        'password': 'passwordLol'
-    };
-    
     peticion.addEventListener('load', ()=>{
         console.log(peticion.responseText);
     });
@@ -220,4 +215,31 @@ async function pruebaRequest(){
     peticion.send(JSON.stringify(data));
 
 
+}
+
+async function checkPasatiempo(){
+    
+    var filas =[];
+    var fila = "";
+    var claseAnterior;
+    var tableInputs = document.getElementsByClassName("tableInputs");
+    claseAnterior = tableInputs[0].classList[1];
+
+    for(let cell of tableInputs){
+        if(cell.textContent=="") return alert("¡El pasatiempo no está completo!");
+
+        if(cell.classList[1]==claseAnterior){
+            fila = fila+cell.textContent;
+        }else{
+            filas.push(fila);
+            fila = cell.textContent;
+        }
+        claseAnterior=cell.classList[1];
+    }
+    
+    filas.push(fila);
+    var pasatiempo = {
+        'pasatiempo': JSON.stringify(filas)
+    }
+    serverRequest(pasatiempo);
 }
