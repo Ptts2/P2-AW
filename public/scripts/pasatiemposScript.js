@@ -201,3 +201,23 @@ async function getDictionaryData(url){
         peticion.send();
     }
 }
+
+
+async function pruebaRequest(){
+
+    var peticion = new XMLHttpRequest();
+
+    var data = {
+        'username': 'userLol',
+        'password': 'passwordLol'
+    };
+    
+    peticion.addEventListener('load', ()=>{
+        console.log(peticion.responseText);
+    });
+    peticion.open("POST", '/check/checkPasatiempo');
+    peticion.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    peticion.send(JSON.stringify(data));
+
+
+}

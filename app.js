@@ -3,10 +3,11 @@
 const http = require('http');
 const express = require('express');
 const app = express();
+app.use(express.json());
 
 const pasatiempos = require('./appRoutes.js');
 const checker = require('./appDataChecker.js');
-const PORT = 5500;
+const PORT = 5050;
 
 
 //Pagina principal - seleccion de pasatiempos

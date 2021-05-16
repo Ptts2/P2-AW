@@ -7,16 +7,18 @@ const path = require('path');
 
 const router = express.Router();
 
+
 router.get('/checkPasatiempo', (req, res)=>{
-    
-    //Comprobar para enlaces
-    res.status(204).send();
+    console.log("Peticion GET");
+    res.send("Te respondo GET");
 });
 
 router.post('/checkPasatiempo', (req, res)=>{
 
-    //Comprobar para inputs
-    res.status(204).send();
+    console.log(req.method);
+    console.log(req.body);
+    res.send("Te respondo POST");
+
 });
 
 module.exports = router;
