@@ -8,23 +8,15 @@ const path = require('path');
 const router = express.Router();
 
 router.get('/1', (req, res)=>{
-    res.sendFile(__dirname + "/public/pasatiempos/pasatiempo.html");
+    res.sendFile(__dirname + "/public/pasatiempos/pasatiempo1.html");
 });
 
 router.get('/2', (req, res)=>{
-    res.sendFile(__dirname + "/public/pasatiempos/pasatiempo.html");
+    res.sendFile(__dirname + "/public/pasatiempos/pasatiempo2.html");
 });
 
 router.get('/3', (req, res)=>{
-    res.sendFile(__dirname + "/public/pasatiempos/pasatiempo.html");
-});
-
-
-//ELIMINAR DESPUES
-router.get('/test', (req, res)=>{
-
-    res.sendFile(__dirname + "/public/pasatiempos/test.html");
-    
+    res.sendFile(__dirname + "/public/pasatiempos/pasatiempo3.html");
 });
 
 module.exports = router;

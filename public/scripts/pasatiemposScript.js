@@ -2,7 +2,6 @@
 var HINT_QTY = 3;
 var dictionary;
 var resuelto = false;
-const respuestas = ["CLAN", "PENA", "REMATO", "TORERO"];
 
 async function inicio() {
 
@@ -58,51 +57,20 @@ async function inicio() {
                 if(response!="Exists") alert("La palabra "+palabra+" no existe!!!");
             });
 
-            //Checkear que esta completo
-            var cells = document.getElementsByClassName('tableInputs');
-            var bienResuelto = false;
-            var clasesFilas = ["fila1", "fila6", "fila7", "fila12"];
-
-            var palabrasEnFilas =["","","",""];
-            for(let cell of cells){
-               if(cell.innerHTML===""){ 
-                    document.getElementById('spanResuelto').innerHTML="No.";
-                    return;
-                }
-                if(cell.className.split(" ")[1] == clasesFilas[0]){
-                    palabrasEnFilas[0]+=cell.innerHTML;
-                }
-                if(cell.className.split(" ")[1] == clasesFilas[1]){
-                    palabrasEnFilas[1]+=cell.innerHTML;
-                }
-                if(cell.className.split(" ")[1] == clasesFilas[2]){
-                    palabrasEnFilas[2]+=cell.innerHTML;
-                }
-                if(cell.className.split(" ")[1] == clasesFilas[3]){
-                    palabrasEnFilas[3]+=cell.innerHTML;
-                }
-            }
-
-            if(palabrasEnFilas[0].toUpperCase() == respuestas[0] && palabrasEnFilas[1].toUpperCase() == respuestas[1] && palabrasEnFilas[2].toUpperCase() == respuestas[2] && palabrasEnFilas[3].toUpperCase() == respuestas[3])
-                bienResuelto=true;
-            
-            if(bienResuelto) document.getElementById('spanResuelto').innerHTML="Si.";
-            else document.getElementById('spanResuelto').innerHTML="No.";
 
         }, false);
 
     }
-    await loadCookies();
     updateHints();
+    await loadCookies();
 }
 
-function updateHints(used, qty){ 
-    if(HINT_QTY === 0) return false;
-    if(used) HINT_QTY--;
-    document.getElementById("remainingHints").innerHTML=HINT_QTY;
-    return true;
-}
+function updateHints(){
 
+    serverRequest({}, '/check/updatePistas', (response)=>{
+        document.getElementById("remainingHints").innerHTML=JSON.parse(response);
+    });
+}
 function saveCookies(){
 
     if(confirm("Todos los datos existentes se sobreescribiran, ¿desea continuar?")){
@@ -139,10 +107,12 @@ function cleanCookies(){
 function restartGame(){
 
     if(confirm("El tablero se vaciará y se borraran los datos locales, ¿desea continuar?")){
-        HINT_QTY = 3;
+
+        serverRequest({}, '/check/resetPistas', (response)=>{
+        });
         updateHints();
         cleanCookies();
-
+        
         //Limpiar tablero
         var cells = document.getElementsByClassName('tableInputs');
         for(let c of cells){
@@ -159,32 +129,19 @@ async function giveHint(){
 
     var hint = checkAndFormatHintInput(document.getElementById('letrasPistas').value);
     if(!hint) return alert("¡Petición de piista inválida! SEPARAR POR COMAS LAS LETRAS");
-    if(!updateHints(true)) return alert("¡No te quedan pistas!");
-    
-    var letrasContenidas ="";
-    for(letra of hint){
-        letrasContenidas += letra+", ";
-    }
-    letrasContenidas = letrasContenidas.substring(0,letrasContenidas.length-2);
-    document.getElementById('containedLetters').innerHTML=letrasContenidas;
 
-    var palabrasEncajan ="";
-    for(word of dictionary){
-
-        var included = true;
-        for(letter of hint){
-            if(!word.includes(letter)){
-                included = false;
-                break;
-            }
-        }
-        if(included){
-            palabrasEncajan+= word + "\n";
-        }
+    var pista = {
+        'pista': hint
     }
-    if(palabrasEncajan=="") palabrasEncajan = "No existen palabras que contengan esas letras";
-    document.getElementById('hintArea').innerHTML=palabrasEncajan;
+
+    serverRequest(pista, '/check/darPista', (response)=>{
+        if(response=="No quedan pistas") return alert("¡No te quedan pistas!");
+        document.getElementById('hintArea').innerHTML=response;
+    });
     
+    serverRequest(pista, '/check/updatePistas', (response)=>{
+        document.getElementById("remainingHints").innerHTML=JSON.parse(response);
+    });
 }
 
 function checkAndFormatHintInput(hint){
@@ -234,9 +191,10 @@ async function checkPasatiempo(num){
     }
     
     serverRequest(pasatiempo, '/check/checkPasatiempo', (response)=>{
+
         if(response=="correcto")
-            alert("Correcto");
+            document.getElementById('spanResuelto').innerHTML="Si.";
         else
-            alert("Mal");
+            document.getElementById('spanResuelto').innerHTML="No.";
     });
 }

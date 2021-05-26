@@ -7,8 +7,10 @@ const path = require('path');
 const extRequest = require('./externalRequests');
 const router = express.Router();
 var dictionary = "";
+var pistas = 3;
 const pasatiemposResueltos =[
-    ["CLAN", "PENA", "REMATO", "TORERO"],
+    ["HOLA", "HOLA", "SALUDO", "SALUDO"],
+    //["CLAN", "PENA", "REMATO", "TORERO"],
     [],
     []
 ];
@@ -62,14 +64,14 @@ router.post('/checkPasatiempo', (req, res)=>{
     var pasatiempoNum = req.body.pasNum;
 
     //Compruebo si las palabras del pasatiempo están en el diccionario
-    for(let c in pasatiempo){
+    for(let c of pasatiempo){
         if(checkWord(c)!="Exists"){
             res.send("Incorrecto");
             return;
         }
     }
     //Compruebo si las soluciones son las correctas
-    for(let i of palabrasClave){
+    for(let i in palabrasClave){
         if(pasatiemposResueltos[pasatiempoNum][i] != palabrasClave[i]){
             res.send("Incorrecto");
             return;
@@ -92,5 +94,50 @@ router.post('/checkPasatiempo/fila', (req, res)=>{
     res.send(checkWord(fila));
 });
 
+router.post('/darPista', (req, res)=>{
+
+    if(pistas==0) {
+        res.send("No quedan pistas");
+        return;
+    }
+
+    var hint = req.body.pista;
+
+    var letrasContenidas ="";
+    for(letra of hint){
+        letrasContenidas += letra+", ";
+    }
+    letrasContenidas = letrasContenidas.substring(0,letrasContenidas.length-2);
+    //document.getElementById('containedLetters').innerHTML=letrasContenidas;
+
+    var palabrasEncajan ="";
+    for(word of dictionary){
+
+        var included = true;
+        for(letter of hint){
+            if(!word.includes(letter)){
+                included = false;
+                break;
+            }
+        }
+        if(included){
+            palabrasEncajan+= word + "\n";
+        }
+    }
+    if(palabrasEncajan=="") palabrasEncajan = "No existen palabras que contengan esas letras";
+    pistas--;
+
+    res.send(palabrasEncajan);
+
+});
+
+router.post('/updatePistas', (req, res)=>{
+    res.send(pistas.toString());
+});
+
+
+router.post('/resetPistas', (req, res)=>{
+    pistas=3;
+});
 
 module.exports = router;
