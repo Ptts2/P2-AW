@@ -207,7 +207,7 @@ async function serverRequest(data, url, _callback){
 
 }
 
-async function checkPasatiempo(){
+async function checkPasatiempo(num){
     
     var filas =[];
     var fila = "";
@@ -229,7 +229,14 @@ async function checkPasatiempo(){
     
     filas.push(fila);
     var pasatiempo = {
-        'pasatiempo': JSON.stringify(filas)
+        'pasatiempo': JSON.stringify(filas),
+        'pasNum': num
     }
-    serverRequest(pasatiempo, '/check/checkPasatiempo', ()=>{});
+    
+    serverRequest(pasatiempo, '/check/checkPasatiempo', (response)=>{
+        if(response=="correcto")
+            alert("Correcto");
+        else
+            alert("Mal");
+    });
 }

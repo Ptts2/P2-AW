@@ -7,6 +7,11 @@ const path = require('path');
 const extRequest = require('./externalRequests');
 const router = express.Router();
 var dictionary = "";
+const pasatiemposResueltos =[
+    ["CLAN", "PENA", "REMATO", "TORERO"],
+    [],
+    []
+];
 
 //Peticion para el diccionario
 const dictReq = {
@@ -20,7 +25,7 @@ const dictReq = {
 };
 
 extRequest.getJSON(dictReq, async (status, result)=>{
-    dictionary = result;
+    dictionary = result.split("\n"); 
 });
 
 
@@ -49,23 +54,30 @@ function checkWord(palabra){
 
 }
 
-router.get('/checkPasatiempo', (req, res)=>{
-    console.log("Peticion GET");
-    res.send("Te respondo GET");
-});
-
 router.post('/checkPasatiempo', (req, res)=>{
 
     //Comprobar el pasatiempo
-    var pasatiempo = req.body; //Array con numero de filas del pasatiempo
+    var pasatiempo = JSON.parse(req.body.pasatiempo); //Array con numero de filas del pasatiempo
+    var palabrasClave = [pasatiempo[0], pasatiempo[5], pasatiempo[6], pasatiempo[11]];
+    var pasatiempoNum = req.body.pasNum;
 
-    //Compruebo si las solciones son las del pasatiempo y las palabras en el diccionario
-
+    //Compruebo si las palabras del pasatiempo están en el diccionario
+    for(let c in pasatiempo){
+        if(checkWord(c)!="Exists"){
+            res.send("Incorrecto");
+            return;
+        }
+    }
+    //Compruebo si las soluciones son las correctas
+    for(let i of palabrasClave){
+        if(pasatiemposResueltos[pasatiempoNum][i] != palabrasClave[i]){
+            res.send("Incorrecto");
+            return;
+        }
+    }
     //Si esta correctamente resuelto
     res.send("correcto");
-
-    //Si no
-    res.send("no");
+    return;
 
 });
 
