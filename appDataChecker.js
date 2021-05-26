@@ -9,10 +9,9 @@ const router = express.Router();
 var dictionary = "";
 var pistas = 3;
 const pasatiemposResueltos =[
-    ["HOLA", "HOLA", "SALUDO", "SALUDO"],
-    //["CLAN", "PENA", "REMATO", "TORERO"],
-    [],
-    []
+    ["CLAN", "PENA", "REMATO", "TORERO"],
+    ["VACA", "ROCA", "ESTADO", "VENADO"],
+    ["VELA", "TELA", "CALCIO", "COLEGA"]
 ];
 
 //Peticion para el diccionario
