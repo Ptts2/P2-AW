@@ -49,9 +49,14 @@ async function inicio() {
                 i++;
             }
 
-            if(!dictionary.includes(palabra.toLocaleLowerCase())){
-                alert("La palabra "+palabra+" no existe!!!");
+            var pal = {
+                'fila': 'n',
+                'palabra': palabra
             }
+            //Envio peticion al servidor para comprobar si la palabra se encuentra en el diccionario
+            serverRequest(pal, '/check/checkPasatiempo/fila', (response) =>{
+                if(response!="Exists") alert("La palabra "+palabra+" no existe!!!");
+            });
 
             //Checkear que esta completo
             var cells = document.getElementsByClassName('tableInputs');
@@ -87,7 +92,6 @@ async function inicio() {
         }, false);
 
     }
-    await getDictionaryData('https://ordenalfabetix.unileon.es/aw/diccionario.txt');
     await loadCookies();
     updateHints();
 }
@@ -190,30 +194,16 @@ function checkAndFormatHintInput(hint){
     return hintF.split(",");
 }
 
-async function getDictionaryData(url){
-
-    if(!dictionary){
-
-        var peticion = new XMLHttpRequest();
-        peticion.open('GET', url, true);
-        peticion.onload =()=>{
-            dictionary = peticion.responseText.split("\n");
-        };
-        peticion.send();
-    }
-}
-
-
-async function serverRequest(data){
-
+//NUEVO
+async function serverRequest(data, url, _callback){
+    
     var peticion = new XMLHttpRequest();
     peticion.addEventListener('load', ()=>{
-        console.log(peticion.responseText);
+        _callback(peticion.responseText);
     });
-    peticion.open("POST", '/check/checkPasatiempo');
+    peticion.open("POST", url);
     peticion.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     peticion.send(JSON.stringify(data));
-
 
 }
 
@@ -241,5 +231,5 @@ async function checkPasatiempo(){
     var pasatiempo = {
         'pasatiempo': JSON.stringify(filas)
     }
-    serverRequest(pasatiempo);
+    serverRequest(pasatiempo, '/check/checkPasatiempo', ()=>{});
 }
